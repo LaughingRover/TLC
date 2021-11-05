@@ -1,0 +1,23 @@
+1. b /
+2. a /
+3. c /
+4. b /
+5. a /
+6. c (problems with answer)
+7. a /
+8. d x (Correct ans: a) mistake
+9. c /
+10. d /
+11. a x (Correct ans: b)
+12. a /
+13. b /
+14. d /
+15. d /
+16. a /
+17. a x (Correct ans: c )
+18. c /
+19. c /
+20. a x (Correct ans: b )
+21. b x (Correct ans: c )
+
+21 - 5 = 16

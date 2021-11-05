@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE fileSystem SYSTEM "XMLIntro.dtd">
+
+<fileSystem>
+	<type>
+		<permissions>
+			<userPermissions />
+			<groupPermissions />
+			<otherPermissions />
+		</permissions>
+
+		<linkCount />
+		<owner />
+		<group />
+		<fileSize />
+		<lastAccessDate />
+		<name />
+		<symbolicLink />
+	</type>
+</fileSystem>

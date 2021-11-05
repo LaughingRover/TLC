@@ -1,0 +1,13 @@
+<!ELEMENT fileSystem (type)>
+<!ELEMENT type (permissions, linkCount, owner, group, fileSize, lastAccessDate, name, symbolicLink)>
+<!ELEMENT permissions (userPermissions | groupPermissions| otherPermissions)*>
+<!ELEMENT userPermissions (#PCDATA) >
+<!ELEMENT groupPermissions (#PCDATA)>
+<!ELEMENT otherPermissions (#PCDATA)>
+<!ELEMENT linkCount (#PCDATA)>
+<!ELEMENT owner (#PCDATA)>
+<!ELEMENT group (#PCDATA)>
+<!ELEMENT fileSize (#PCDATA)>
+<!ELEMENT lastAccessDate (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT symbolicLink (#PCDATA)>

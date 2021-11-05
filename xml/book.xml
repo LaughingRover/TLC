@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+		<!ELEMENT bk:book (bk:title, aw:author+, bk:publisher, bk:pubdate, bk:cost)>
+		<!ELEMENT bk:title (#PCDATA)>
+		<!ELEMENT bk:publisher (#PCDATA)>
+		<!ELEMENT bk:pubdate (#PCDATA)>
+		<!ELEMENT bk:cost (#PCDATA)>
+		<!ELEMENT aw:author (aw:title, aw:firstName)>
+		<!ELEMENT aw:title (#PCDATA)>
+		<!ELEMENT aw:firstName (#PCDATA)>
+	]
+>
+
+<root xmlns:aw="http://schemas.openxmlformats.org/"
+			xmlns:bk="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+	<bk:book>
+		<bk:title>Learning XML</bk:title>
+		<aw:author >
+				<aw:title></aw:title>
+				<aw:firstName>Joseph</aw:firstName>
+		</aw:author>
+
+		<aw:author>
+			<aw:title>Mr</aw:title>
+			<aw:firstName>Dzifa</aw:firstName>
+		</aw:author>
+
+		<bk:publisher>Addison Wesley</bk:publisher>
+		<bk:pubdate>2000</bk:pubdate>
+		<bk:cost>34.95</bk:cost>
+	</bk:book>
+</root>

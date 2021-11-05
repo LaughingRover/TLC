@@ -1,0 +1,129 @@
+--SQL Execution Order
+--
+3 -- select
+1 -- from
+2 -- where
+4 -- group by
+5 -- having
+6 -- order by
+7 -- fetch first
+
+
+
+--Data Types
+-------------
+--Find all titles with an undefined price in table 
+--titles
+select *
+from pubs2 where titles t is notnull;
+
+--Find all titles with an undefined price in table 
+--titles and supply a price of $20.00 for those with no defined price
+select title, '20'::money as price 
+from titles where price is null; 
+
+select title, coalesce(price, '20.00') 
+from titles t; 
+
+--List the first 50 characters (of the pr_info column) of the 
+--pub_info table
+select left(pr_info, 50) 
+from pub_info pi2;
+
+select right(pr_info, 50) 
+from pub_info pi2;
+
+select pr_info, substring(pr_info, 1, 50) 
+from pub_info pi2;
+
+--Examine the Postgres function reference for alternative ways of
+--converting date values to varchar.
+select pubdate, to_char(pubdate, 'yyyymmdd') 
+from titles t; 
+
+--Locate and use one the functions that would allow you to specify the format 
+--to be used when outputting a date. Format the ord_date in sales so it looks 
+--like this: Tuesday 13th September 1994
+select ord_date, to_char(ord_date, 'Day DD Month YYYY')
+from sales s;
+
+
+--Functions
+------------
+--Current Time
+--
+--Display the current date
+select current_date;
+
+--Display the current time
+select current_time;
+
+--Display the current timestamp
+select current_timestamp;
+select now();
+--select now() = current_timestamp
+
+--Converting from Strings
+--
+--Convert the string '2018-09-26' to a date
+select to_date('26-09-2018', 'dd mm yyyy'); 
+
+--Convert the string '2018-09-26' to a timestamp
+select to_timestamp('26-09-2018', 'dd mm yyyy');
+
+
+--Subtracting Dates
+--------------------
+--How many days are there between '2018-09-26' and '2018-12-25'?
+select '2018-12-25'::timestamp -'2018-09-26'::timestamp;
+
+--How many days have elapsed since each book in 
+--TITLES was published?
+select '2018-12-25'::date -'2018-09-26'::date;
+select title, pubdate, (now() - pubdate) as timeSincePub
+from titles t; 
+
+--Extracting components from dates
+-----------------------------------
+--Display the year of publication of each book in 
+--TITLES.
+select pubdate, (to_char(pubdate, 'yyyy')) as pubyear
+from titles t; 
+
+--Display the day of publication of each book in 
+--TITLES.
+select (to_char(pubdate, 'dd')) as pubday
+from titles t; 
+
+
+--Using TIMESTAMPDIFF
+----------------------
+--Using TIMESTAMPDIFF(), get the difference
+--between these dates: '2018-03-02' and '2018-02-01'.
+select abs(extract (EPOCH from '2018-03-02'::timestamp -'2018-02-01'::timestamp)/3600)/24;
+select ((extract(EPOCH from '2018-03-02'::timestamp) - extract(EPOCH from '2018-02-01'::timestamp))/3600)/24;
+select '2018-03-02'::timestamp -'2018-02-01'::timestamp "Timestamp";
+select ('2018-03-02'::timestamp - '2018-02-01'::timestamp) as days;
+select date_part('year','2021-10-20'::date) - date_part('year','1990-11-11'::date);
+select DATE_PART('day', '2011-12-31 01:00:00'::timestamp - '2011-12-29 23:00:00'::timestamp);
+
+
+
+--ER modeling
+--Select
+--Joins
+--Dates
+--aggregate_functions
+
+
+
+
+
+
+
+
+
+
+
+--Where selects input rows before groups and aggregates are computed...…. 
+--HAVING selects group rows after and aggregates are computed?

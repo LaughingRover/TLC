@@ -1,0 +1,54 @@
+What is known about char
+
+1. Char are allocated in sequence in memory. (contigous memory layout).
+2. Standard out is implemented to print characters until it hits the string terminator (hence a null terminated string).
+3. The address of an uninitialized char returns nothing but if cast to a void (e.g (void*)&p  ,  static_cast<void *>(&p) ) then it returns an address. This behaviour is because the pointer has not been initialized so it does not point to anything. To prevent this the pointer can be initialized to 0 (char *p =0; // creates a nullptr). 
+
+QUESTION?
+---------
+1. Therefore p must be pointed to some memory, why is this behaviour different from other datatypes?
+2. And what in is segmentation fault
+
+
+
+
+OTHER WAYS OF INITIALIZING CHAR TO AN ADDRESS:
+initialize to some automatic
+
+void foo() {
+  char a[100];
+  char *p = a;
+}
+or global memory:
+
+char a[100];
+void foo() {
+  char *p = a;
+}
+or get dynamic memory:
+
+char* p = new char [100];
+Then you can use p (if not NULL) to read data and to read from p...
+
+
+
+
+REF
+A pointer to any type of object can be assigned to a variable of type void*, a void* can be assigned to another void*, void* can be compared for equality and inequality, and a void* can be explicitly converted to another type. Other operations would be unsafe because the compiler cannot know what kind of object is really pointed to. Consequently, other operations result in compile-time errors.
+
+
+
+Sources:
+https://eli.thegreenplace.net/2009/11/16/void-and-casts-in-c-and-c
+
+
+POINTS OF INTEREST
+constant pointers
+constant data
+constant pointers to constant data
+
+process control
+storage class
+System calls
+Stacks heaps
+Execution of c++ code 

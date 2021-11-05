@@ -1,0 +1,95 @@
+select * from titles t
+
+
+--Grouping and Aggregate Functions
+-----------------------------------
+--Get average prices from the titles table for each type of book, and convert type to char(30).
+select "type"::char(30) , avg(price::numeric)
+from pubs2.titles t 
+group by type
+
+--Print the difference between (to a resolution of days) the earliest and latest publication date in titles
+select max(pubdate::timestamp) - min(pubdate::timestamp) 
+from pubs2.titles t 
+
+--Print the average, min and max book prices within the titles table organised into groups based on type and publisher id.
+select "type", avg(coalesce (price::numeric, 0)), min(price::numeric), max(price::numeric) 
+from pubs2.titles group by type, pub_id;
+
+select "type", avg(price::numeric), min(price::numeric), max(price::numeric) 
+from pubs2.titles group by type, pub_id;
+
+--Refine the previous question to show only those types whose average price is > $20 and output the results sorted on the average price.
+select "type", avg(coalesce (price::numeric, 0)) as ave, min(price::numeric), max(price::numeric) 
+from pubs2.titles
+where (price::numeric) > 20
+group by type, pub_id 
+--having avg(price::numeric) > 20;
+
+--List the books in order of the length of their title
+select title
+from titles t order by char_length(title) asc
+--character_length(), length()
+
+
+--Business Queries
+-------------------
+--What is the average age in months of each type of title?
+select "type", date_part('mon', avg(age(pubdate))) "age in months" from titles
+	group by "type";
+
+--select date_part('day', now() - pubdate::timestamp)/3600 * 30 as months from titles t;
+
+--How many authors live in each city?
+select city, count(city) "Sum of authors in each city" from authors
+group by city;
+
+
+--What is the longest title?
+select title from titles t 
+where length(title) = (select max(length(title)) from titles t2)
+
+select title from titles t order by
+
+
+--How many books have been sold by each store and how many books have been sold in total?
+select stor_id, sum(qty) as "Books sold"
+from sales s
+group by stor_id
+order by "Books sold" asc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select count(*)
+from authors a 
+where state != 'CA'
+
+
+
+ 
+select stor_id, ord_num, sum(qty) as "Total Qty"
+from sales s
+--where sum(qty) > 50
+group by stor_id, ord_num
+having sum(qty) > 50
+order by "Total Qty"

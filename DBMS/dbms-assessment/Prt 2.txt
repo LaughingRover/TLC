@@ -1,0 +1,184 @@
+Q1:
+--A query to return the total number of auctions that have a duration of less than 10 days 
+--(hint: check out the reference documentation for the TIMESTAMPDIFF function).
+
+select (enddate::timestamp - startdate::timestamp) as days 
+from mb_auction ma 
+where (enddate::date - startdate::date) < 10
+group by enddate, startdate
+
+days           |
+---------------+
+4 days 23:59:00|
+6 days 23:59:00|
+2 days 23:59:00|
+3 days 23:59:00|
+4 days 23:59:00|
+4 days 23:59:00|
+4 days 23:59:00|
+4 days 23:59:00|
+9 days 23:59:00|
+---
+
+Q2:
+--For all the auctions that are in progress, show the item description, 
+--the date that the auction ends and the reserve price, 
+--ordered by reserve price with the highest first.
+
+select mi.description
+	,ma.enddate
+	,ma.reserve
+	,ma.status
+from mb_auction ma
+inner join mb_item mi 
+	on ma.itemid = mi.itemid
+order by reserve desc;
+
+description                     |enddate                |reserve|status |
+--------------------------------+-----------------------+-------+-------+
+Aston Martin (light kerb damage)|2011-01-03 23:59:00.000|  10000|unsold |
+Aston Martin (light kerb damage)|2011-01-08 23:59:00.000|   9950|unsold |
+Georgian Dresser                |2011-01-12 23:59:00.000|   7500|sold   |
+Donkey Kong                     |2011-01-05 23:59:00.000|    500|unsold |
+Penny Farthing Bicycle          |2011-01-20 23:59:00.000|    500|unsold |
+Penny Farthing Bicycle          |2011-01-30 23:59:00.000|    450|sold   |
+Donkey Kong                     |2011-01-10 23:59:00.000|    400|unsold |
+Donkey Kong                     |2011-01-15 23:59:00.000|    300|unsold |
+Socks                           |2011-01-15 23:59:00.000|    200|sold   |
+IPhad One                       |2011-02-27 23:59:00.000|    200|pending|
+Donkey Kong                     |2011-01-20 23:59:00.000|    200|sold   |
+Suede Jacket                    |2011-02-25 23:59:00.000|     60|pending|
+Onesies (qty: five)             |2011-02-25 23:59:00.000|     10|pending|
+----
+
+Q3:
+--Display the names of all users who have bid in auctions they have started.
+select distinct muser.name
+from mb_user muser
+inner join mb_auction mauction
+	on muser.userid = mauction.userid
+inner join mb_bid mbid 
+	on mbid.auctionid = mbid.auctionid;
+
+name          |
+--------------+
+Carrie Oakey  |
+Hugh N. Smith |
+Dave Mal One  |
+George Foreman|
+
+---
+
+Q4:
+--Display the names of all users who have auctioned the same item more than once. 
+--This will occur if an auction did not meet its reserve price and the seller decided to auction it again.
+select distinct muser.userid
+	,muser.name
+	,mauction.itemid
+from mb_user muser
+inner join mb_auction mauction 
+	on muser.userid = mauction.userid
+group by muser.userid, muser.name, mauction.itemid
+having not distinct count(mauction.itemid) > 1;
+
+userid|name          |itemid|
+------+--------------+------+
+     6|Hugh N. Smith |     8|
+     2|Dave Mal One  |     3|
+     2|Dave Mal One  |     5|
+     3|Carrie Oakey  |     4|
+     2|Dave Mal One  |     7|
+     3|Carrie Oakey  |     6|
+     1|George Foreman|     2|
+     1|George Foreman|     1|
+---
+
+Q5:
+--Display the auction ID and amount of the winning bid for all ‘sold’ auctions.
+select ma.auctionid
+	,ma.status
+	,ma.winner
+	,mb.amount as "winning bid"
+from mb_auction ma
+inner join mb_bid mb
+	on mb.auctionid = ma.auctionid
+where ma.winner is not null;
+
+auctionid|status|winner|winning bid|
+---------+------+------+-----------+
+        4|sold  |     3|         10|
+        4|sold  |     3|        100|
+        4|sold  |     3|        150|
+        4|sold  |     3|        199|
+        4|sold  |     3|        250|
+        4|sold  |     3|        371|
+        7|sold  |     5|          1|
+        7|sold  |     5|       1000|
+        7|sold  |     5|       1001|
+        7|sold  |     5|       3000|
+        7|sold  |     5|       3001|
+        7|sold  |     5|       4500|
+        7|sold  |     5|       4501|
+        7|sold  |     5|       8000|
+        7|sold  |     5|       8001|
+        8|sold  |     1|          1|
+        8|sold  |     1|        100|
+        8|sold  |     1|        250|
+       10|sold  |     3|          1|
+       10|sold  |     3|        400|
+       10|sold  |     3|        440|
+       10|sold  |     3|        450|
+       10|sold  |     3|        451|
+       10|sold  |     3|        475|
+---
+
+Q6:
+--List all auctions (pending, sold or unsold), displaying the end date and the description of the item. 
+--For auctions that have a winner, display the name of the winner and the winning bid amount. 
+--For auctions that have no winner, display some marker characters (e.g. ‘==’) to show that the winner is missing, 
+--and display ‘0’ for the winning amount. Hint: you may wish to use the query you created in the previous step.
+select distinct ma.auctionid
+	,ma.enddate
+	,mi.description
+	,ma.winner
+	,mu.name
+	,mb.amount
+from mb_auction ma
+inner join mb_item mi 
+	on mi.itemid = ma.itemid
+inner join mb_user mu
+	on mu.userid = ma.userid
+inner join mb_bid mb
+	on mb.auctionid = ma.auctionid
+where winner is not null;
+
+auctionid|enddate                |description           |winner|name          |amount|
+---------+-----------------------+----------------------+------+--------------+------+
+       10|2011-01-30 23:59:00.000|Penny Farthing Bicycle|     3|Dave Mal One  |     1|
+        8|2011-01-15 23:59:00.000|Socks                 |     1|Dave Mal One  |     1|
+       10|2011-01-30 23:59:00.000|Penny Farthing Bicycle|     3|Dave Mal One  |   475|
+        4|2011-01-20 23:59:00.000|Donkey Kong           |     3|George Foreman|   150|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|  8000|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|  3001|
+        4|2011-01-20 23:59:00.000|Donkey Kong           |     3|George Foreman|   199|
+       10|2011-01-30 23:59:00.000|Penny Farthing Bicycle|     3|Dave Mal One  |   440|
+        4|2011-01-20 23:59:00.000|Donkey Kong           |     3|George Foreman|    10|
+        4|2011-01-20 23:59:00.000|Donkey Kong           |     3|George Foreman|   250|
+        4|2011-01-20 23:59:00.000|Donkey Kong           |     3|George Foreman|   371|
+        8|2011-01-15 23:59:00.000|Socks                 |     1|Dave Mal One  |   100|
+       10|2011-01-30 23:59:00.000|Penny Farthing Bicycle|     3|Dave Mal One  |   450|
+        8|2011-01-15 23:59:00.000|Socks                 |     1|Dave Mal One  |   250|
+        4|2011-01-20 23:59:00.000|Donkey Kong           |     3|George Foreman|   100|
+       10|2011-01-30 23:59:00.000|Penny Farthing Bicycle|     3|Dave Mal One  |   451|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|  8001|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|  4501|
+       10|2011-01-30 23:59:00.000|Penny Farthing Bicycle|     3|Dave Mal One  |   400|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|  1001|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|  3000|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|     1|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|  4500|
+        7|2011-01-12 23:59:00.000|Georgian Dresser      |     5|George Foreman|  1000|
+---
+
+
+NB: The sample data assumes that the "current date" is Feb 20th 2011, so you may use this date when deciding whether auctions have finished or not.

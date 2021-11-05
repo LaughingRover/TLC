@@ -1,0 +1,50 @@
+--A query to return the total number of auctions that have a duration of less than 10 days 
+--(hint: check out the reference documentation for the TIMESTAMPDIFF function).
+select (enddate::timestamp - startdate::timestamp) as days 
+from mb_auction ma 
+where (enddate::date - startdate::date) < 10
+group by enddate, startdate
+---
+
+--For all the auctions that are in progress, show the item description, 
+--the date that the auction ends and the reserve price, 
+--ordered by reserve price with the highest first.
+select mi.description
+	,ma.enddate
+	,ma.reserve
+	,ma.status
+from mb_auction ma
+inner join mb_item mi 
+	on ma.itemid = mi.itemid
+order by reserve desc;
+----
+
+--Display the names of all users who have bid in auctions they have started.
+select muser.name
+from mb_user muser
+inner join mb_auction mauction
+	on muser.userid = mauction.userid
+inner join mb_bid mbid 
+	on mbid.auctionid = mbid.auctionid;
+---
+
+--Display the names of all users who have auctioned the same item more than once. 
+--This will occur if an auction did not meet its reserve price and the seller decided to auction it again.
+select muser.userid
+	,muser.name
+	,mauction.itemid
+from mb_user muser
+inner join mb_auction mauction 
+	on muser.userid = mauction.userid;
+---
+
+
+
+--Display the auction ID and amount of the winning bid for all ‘sold’ auctions.
+---
+
+--List all auctions (pending, sold or unsold), displaying the end date and the description of the item. 
+--For auctions that have a winner, display the name of the winner and the winning bid amount. 
+--For auctions that have no winner, display some marker characters (e.g. ‘==’) to show that the winner is missing, 
+--and display ‘0’ for the winning amount. Hint: you may wish to use the query you created in the previous step.
+---
