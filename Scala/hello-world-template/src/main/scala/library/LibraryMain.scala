@@ -1,0 +1,5 @@
+package library
+
+object LibraryMain {
+
+}

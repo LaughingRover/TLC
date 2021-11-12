@@ -1,0 +1,5 @@
+package trade
+
+object TradeMain {
+
+}

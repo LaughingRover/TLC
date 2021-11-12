@@ -1,0 +1,8 @@
+\gradle-travis-sample
+
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
